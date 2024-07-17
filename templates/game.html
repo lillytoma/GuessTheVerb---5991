@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Game</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+		<script src="https://kit.fontawesome.com/9445619a21.js" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<div class="login">
+			<h1>GuessTheVerb</h1>
+			<div><i class="fa fa-user"></i><br>
+				Profile</div>
+			<div><i class="fa-solid fa-right-from-bracket"></i><br>Logout</div>
+			<form action="{{ url_for('game') }}" method="post">
+				<label for="guess">
+					<i class="fa-solid fa-globe"></i>
+				</label>
+				<input type="text" name="guess" placeholder="Guess here" id="username" required>
+				<div class="msg">{{ msg }}</div>
+				<input type="submit" value="Enter">
+			</form>
+		</div>
+	</body>
+</html>

@@ -17,11 +17,7 @@ RUN pip install pymongo
 EXPOSE 5000
 
 # Set environment variable
-<<<<<<< HEAD
 ENV FLASK_APP main.py
-=======
-ENV FLASK_APP=main.py
->>>>>>> b70a26f0af4a25060ed6b7bdf18170b308615d2b
 
 # Run the Flask application
 CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]

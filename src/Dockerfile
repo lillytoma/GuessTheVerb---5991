@@ -12,12 +12,13 @@ COPY . /app
 RUN pip install flask
 RUN pip install python-dotenv
 RUN pip install pymongo
+RUN pip install levenshtein
 
 # Make port 5000 available to the world outside this container
 EXPOSE 5000
 
 # Set environment variable
-ENV FLASK_APP=main.py
+ENV FLASK_APP=auth.py
 
 # Run the Flask application
 CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]

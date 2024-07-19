@@ -1,12 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
+import requests
 
 load_dotenv()
 MgPass = os.getenv('MongoPass')
 
-uri = 'mongodb+srv://du8258:'+MgPass+'@cluster0.uexvwf7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+uri = 'mongodb+srv://du8258:'+ MgPass +'@cluster0.uexvwf7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"  # Replace with a strong secret key
@@ -74,7 +75,16 @@ def game():
             ### ADD Lilyan's Game Logic ###
             ### ADD  Bao's Scorning Logic ###
             msg = 'Your guess was: '+guess
+
+            uri = 'http://127.0.0.1:8000/'+guess
+            gamelogic = requests.get(uri)
+            score = gamelogic.json().get("score")
+            chosen_word = gamelogic.json().get("chosen_word")
+            msg = 'Your guess was: '+ chosen_word + ' and score: '+ str(score)
             return render_template('game.html', msg=msg)
+            
+            return jsonify({"guess":guess})
+        
     else:
         return render_template('login.html', msg="Please Login")
 

@@ -57,7 +57,7 @@ def login():
             session['loggedin'] = True
             session['username'] = user['username']
             msg = 'Login successful!'
-            return render_template('game.html', msg=msg)
+            return redirect(url_for('game'))
             
         else:
             msg = 'Invalid username or password. Please try again.'
@@ -69,26 +69,36 @@ def login():
 def game():
     msg = 'Welcome!'
     if session['loggedin'] == True:
+        print(session['loggedin'])
+        guesses = []
     
         if request.method == 'POST':
             guess = request.form['guess']
             ### ADD Lilyan's Game Logic ###
             ### ADD  Bao's Scorning Logic ###
             msg = 'Your guess was: '+guess
+            guesses.append(guess)
 
             uri = 'http://127.0.0.1:8000/'+guess
             gamelogic = requests.get(uri)
             score = gamelogic.json().get("score")
             chosen_word = gamelogic.json().get("chosen_word")
             msg = 'Your guess was: '+ chosen_word + ' and score: '+ str(score)
-            return render_template('game.html', msg=msg)
-            
-            return jsonify({"guess":guess})
-        
+
+            return render_template('game.html', len=len(guesses), guesses=guesses, msg=msg)
+
+       
     else:
+        guesses.clear()
         return render_template('login.html', msg="Please Login")
 
     return render_template('game.html',msg=msg)
+
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    session.clear()
+    return redirect(url_for('login'))
 
 # main driver function
 if __name__ == '__main__':

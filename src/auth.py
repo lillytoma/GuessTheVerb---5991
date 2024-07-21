@@ -8,8 +8,7 @@ load_dotenv()
 MgPass = os.getenv('MongoPass')
 MgUser = os.getenv('MongoUser')
 
-
-uri = 'mongodb+srv://:'+ MgUser +'@cluster0.uexvwf7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+uri = 'mongodb+srv://'+MgUser+':'+ MgPass +'@cluster0.uexvwf7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"  # Replace with a strong secret key

@@ -6,7 +6,7 @@ import requests
 
 load_dotenv()
 MgPass = os.getenv('MongoPass')
-MgUser = os.getenv('MongoPass')
+MgUser = os.getenv('MongoUser')
 
 
 uri = 'mongodb+srv://:'+ MgUser +'@cluster0.uexvwf7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'

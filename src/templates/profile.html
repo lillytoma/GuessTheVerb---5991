@@ -2,24 +2,19 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Game</title>
+		<title>Profile</title>
 		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
 		<script src="https://kit.fontawesome.com/9445619a21.js" crossorigin="anonymous"></script>
 	</head>
 	<body>
 		<div class="login">
-			<h1>Profiel</h1>
-			<div>
-				<a href="{{ url_for('game') }}" class="active"><i class="fa fa-user" ></i>Game</a>
-				<br>
-				<a href="{{ url_for('login') }}" class="active"><i class="fa-solid fa-right-from-bracket" ></i>Logout</a>
-				<br>
+			<h1>Profile</h1>
+			<div class="links">
+				<a href="{{ url_for('game') }}" class="active"><i class="fa fa-gamepad"></i> Game</a>
+				<a href="{{ url_for('logout') }}" class="active"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
 			</div>
             <h1>Nothing to See</h1>
-
-
-
 		</div>
 	</body>
 </html>

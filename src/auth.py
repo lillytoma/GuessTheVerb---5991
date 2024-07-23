@@ -18,16 +18,22 @@ client = MongoClient(uri,27017)
 db = client['GuessTheVerb']  # Replace with your MongoDB database name
 users_collection = db['users']
 
-@app.route('/')
+#@app.route('/')
 # ‘/’ URL is bound with hello_world() function.
-def guess_the_verb():
+#def guess_the_verb():
     # if "username" in session:
     #     user = session["username"]
     #     return 'Welcome to GuessTheVerb'
     # else:
     #     return redirect(url_for("login"))
+    #msg = ''
+    #return render_template('login.html', msg='')
+@app.route('/')
+def guess_the_verb():
+    print("Accessing the home page")
     msg = ''
-    return render_template('login.html', msg='')
+    return render_template('login.html', msg=msg)
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -108,6 +114,6 @@ if __name__ == '__main__':
 
     # run() method of Flask class runs the application 
     # on the local development server.
-    app.run()
+    app.run(debug = True, port = 5001)
 
     #https://www.geeksforgeeks.org/build-your-own-microservices-in-flask/

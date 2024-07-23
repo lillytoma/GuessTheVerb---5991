@@ -6,7 +6,6 @@ import requests
 
 load_dotenv()
 MgPass = os.getenv('MongoPass')
-
 MgUser = os.getenv('MongoUser')
  
 uri = 'mongodb+srv://'+ MgUser +':'+ MgPass +'@cluster0.uexvwf7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
@@ -79,29 +78,34 @@ def game():
     msg = 'Welcome!'
     if session['loggedin'] == True:
         print(session['loggedin'])
-        guesses = []
+        print(session["username"])
     
         if request.method == 'POST':
             guess = request.form['guess']
             ### ADD Lilyan's Game Logic ###
             ### ADD  Bao's Scorning Logic ###
-            msg = 'Your guess was: '+guess
-            guesses.append(guess)
 
             uri = 'http://127.0.0.1:8000/'+guess
             gamelogic = requests.get(uri)
             score = gamelogic.json().get("score")
             chosen_word = gamelogic.json().get("chosen_word")
-            msg = 'Your guess was: '+ chosen_word + ' and score: '+ str(score)
+            msg = 'Your guess was: '+ guess + ' and score: '+ str(score)
 
-            return render_template('game.html', len=len(guesses), guesses=guesses, msg=msg)
+            #users_collection.insert_one({'username': username, 'password': password,'email':email})
+
+            return render_template('game.html', msg=msg)
 
        
     else:
-        guesses.clear()
         return render_template('login.html', msg="Please Login")
 
     return render_template('game.html',msg=msg)
+
+@app.route('/api/userdata')
+def userdata():
+    user = users_collection.find_one({'username': username})
+    return jsonify({"usersession":session["tries"],"score": score,"chosen_word":chosen_word}) #jsonify({"guess":guess})
+
 
 @app.route('/logout')
 def logout():

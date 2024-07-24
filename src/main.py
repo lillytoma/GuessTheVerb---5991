@@ -46,7 +46,6 @@ def calculate_score(guess, word):
 
 ## Bhushan's update:
 
-uri = "http://127.0.0.1:5000/game"
 @app.route('/<guess>', methods=['GET'])
 def gamelogic(guess):
     user_guess = guess.strip().lower()

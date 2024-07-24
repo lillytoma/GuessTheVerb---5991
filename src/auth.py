@@ -3,6 +3,9 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
 import requests
+import datetime as dt
+import bson
+
 
 load_dotenv()
 MgPass = os.getenv('MongoPass')
@@ -37,7 +40,8 @@ def register():
         if users_collection.find_one({'username': username}):
             flash('Username already exists. Choose a different one.', 'danger')
         else:
-            users_collection.insert_one({'username': username, 'password': password,'email':email})
+            time = dt.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+            users_collection.insert_one({'username': username, 'password': password,'email':email, 'datecreated':time})
             flash('Registration successful. You can now log in.', 'success')
             return redirect(url_for('login'))
 
@@ -94,8 +98,8 @@ def game():
 
 @app.route('/api/userdata')
 def userdata():
-    user = users_collection.find_one({'username': username})
-    return jsonify({"usersession":session["tries"],"score": score,"chosen_word":chosen_word}) #jsonify({"guess":guess})
+    user = users_collection.find_one({'username': session["username"]})
+    return jsonify({"usersession":session["tries"],"score": user["score"],"chosen_word":["chosen_word"]}) #jsonify({"guess":guess})
 
 
 @app.route('/logout')
@@ -108,8 +112,7 @@ def logout():
 @app.route('/profile')
 def profile():
     user = users_collection.find_one({'username': session["username"]})
-    print(user["username"])
-    return render_template('profile.html',user=user["username"],email=user["email"])
+    return render_template('profile.html',user=user["username"],email=user["email"], joined =user["datecreated"])
 
 
 # main driver function

@@ -19,12 +19,13 @@ app.secret_key = "your_secret_key"  # Replace with a strong secret key
 client = MongoClient(uri,27017)
 db = client['GuessTheVerb']  # Replace with your MongoDB database name
 users_collection = db['users']
-
+sessionscore_collection = db['sescore']
 
 @app.route('/')
 def guess_the_verb():
     print("Accessing the home page")
     msg = ''
+    session.clear()
     return render_template('login.html', msg=msg)
 
 
@@ -77,8 +78,6 @@ def game():
     
         if request.method == 'POST':
             guess = request.form['guess']
-            ### ADD Lilyan's Game Logic ###
-            ### ADD  Bao's Scorning Logic ###
 
             uri = 'http://127.0.0.1:8000/'+guess
             gamelogic = requests.get(uri)
@@ -86,15 +85,23 @@ def game():
             chosen_word = gamelogic.json().get("chosen_word")
             msg = 'Your guess was: '+ guess + ' and score: '+ str(score)
 
-            #users_collection.insert_one({'username': username, 'password': password,'email':email})
+            user = {"username":session["username"]}
+            sescores = sessionscore_collection.find_one(user)
 
-            return render_template('game.html', msg=msg)
+            if sessionscore_collection.find_one(user):
+                
+                sessionscore_collection.update_one(user, {'$push': {'scores': score,'guess':guess}})
+                sessionscore_collection.update_one(user, {'$set': {'tries': sescores["tries"]+1}})
+                
+            else:
+                sessionscore_collection.insert_one({"username":session["username"],'tries':1,'scores': [score],'guess':[guess]})
 
-       
+            return render_template('game.html', guesses=sescores['guess'], scores=sescores['scores'], len=len(sescores['guess']))
+
     else:
         return render_template('login.html', msg="Please Login")
 
-    return render_template('game.html',msg=msg)
+    return render_template('game.html',len=1,guesses='',scores='')
 
 @app.route('/api/userdata')
 def userdata():

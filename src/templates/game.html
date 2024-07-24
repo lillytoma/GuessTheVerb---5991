@@ -23,19 +23,14 @@
 					<i class="fa-solid fa-globe"></i>
 				</label>
 				<input type="text" name="guess" placeholder="Guess here" id="username" required>
-				<div class="msg">{{ msg }}</div>
-				<!--<div class="msg">
-						{% if not guesses %}
-							{{ msg }}
-						{% else %} 
-							{%for i in range(0, len)%} 
-								{{guesses[i]}} <br>
-							{%endfor%} 
-						{% endif %}
-
+				<!-- <div class="msg">{{ msg }}</div> -->
+				<div class="msg">
+					{%for i in range(0, len)%} 
+						Your guess was: {{guesses[i]}} and score: {{scores[i]}}  <br>
+					{%endfor%} 
 
 				</div>
-			-->
+			
 
 				<input type="submit" value="Enter">
 			</form>

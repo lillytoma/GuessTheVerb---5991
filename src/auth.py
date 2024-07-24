@@ -86,16 +86,18 @@ def game():
             msg = 'Your guess was: '+ guess + ' and score: '+ str(score)
 
             user = {"username":session["username"]}
-            sescores = sessionscore_collection.find_one(user)
+
 
             if sessionscore_collection.find_one(user):
-                
+                sescores = sessionscore_collection.find_one(user) 
                 sessionscore_collection.update_one(user, {'$push': {'scores': score,'guess':guess}})
                 sessionscore_collection.update_one(user, {'$set': {'tries': sescores["tries"]+1}})
+                sescores = sessionscore_collection.find_one(user) 
                 
             else:
                 sessionscore_collection.insert_one({"username":session["username"],'tries':1,'scores': [score],'guess':[guess]})
-
+                sescores = sessionscore_collection.find_one(user)   
+                 
             return render_template('game.html', guesses=sescores['guess'], scores=sescores['scores'], len=len(sescores['guess']))
 
     else:

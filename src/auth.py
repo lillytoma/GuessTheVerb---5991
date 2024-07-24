@@ -101,7 +101,7 @@ def game():
     else:
         return render_template('login.html', msg="Please Login")
 
-    return render_template('game.html',len=1,guesses='',scores='')
+    return render_template('game.html',msg = 'Welcome!')
 
 @app.route('/api/userdata')
 def userdata():

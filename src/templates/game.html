@@ -23,11 +23,15 @@
 					<i class="fa-solid fa-globe"></i>
 				</label>
 				<input type="text" name="guess" placeholder="Guess here" id="username" required>
-				<!-- <div class="msg">{{ msg }}</div> -->
+				<!-- <div class="msg"></div> -->
 				<div class="msg">
-					{%for i in range(0, len)%} 
-						Your guess was: {{guesses[i]}} and score: {{scores[i]}}  <br>
-					{%endfor%} 
+					{% if msg == 'Welcome!' %}
+						{{ msg }}
+					{%else %}
+						{%for i in range(0, len)%} 
+							Your guess was: {{guesses[i]}} and score: {{scores[i]}}  <br>
+						{%endfor%} 
+					{%endif%}
 
 				</div>
 			

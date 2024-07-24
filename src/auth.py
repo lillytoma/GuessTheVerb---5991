@@ -3,10 +3,12 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
 import requests
+import datetime as dt
+import bson
+
 
 load_dotenv()
 MgPass = os.getenv('MongoPass')
-
 MgUser = os.getenv('MongoUser')
  
 uri = 'mongodb+srv://lilyantoma:Kr7XacrE7cJHYFzQ@cluster0.uad9ms8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
@@ -16,21 +18,13 @@ app.secret_key = "your_secret_key"  # Replace with a strong secret key
 client = MongoClient(uri,27017)
 db = client['GuessTheVerb']  # Replace with your MongoDB database name
 users_collection = db['users']
+sessionscore_collection = db['sescore']
 
-#@app.route('/')
-# ‘/’ URL is bound with hello_world() function.
-#def guess_the_verb():
-    # if "username" in session:
-    #     user = session["username"]
-    #     return 'Welcome to GuessTheVerb'
-    # else:
-    #     return redirect(url_for("login"))
-    #msg = ''
-    #return render_template('login.html', msg='')
 @app.route('/')
 def guess_the_verb():
     print("Accessing the home page")
     msg = ''
+    session.clear()
     return render_template('login.html', msg=msg)
 
 
@@ -46,7 +40,8 @@ def register():
         if users_collection.find_one({'username': username}):
             flash('Username already exists. Choose a different one.', 'danger')
         else:
-            users_collection.insert_one({'username': username, 'password': password,'email':email})
+            time = dt.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+            users_collection.insert_one({'username': username, 'password': password,'email':email, 'datecreated':time})
             flash('Registration successful. You can now log in.', 'success')
             return redirect(url_for('login'))
 
@@ -78,35 +73,55 @@ def game():
     msg = 'Welcome!'
     if session['loggedin'] == True:
         print(session['loggedin'])
-        guesses = []
+        print(session["username"])
     
         if request.method == 'POST':
             guess = request.form['guess']
-            ### ADD Lilyan's Game Logic ###
-            ### ADD  Bao's Scorning Logic ###
-            msg = 'Your guess was: '+guess
-            guesses.append(guess)
 
             uri = 'http://127.0.0.1:8000/'+guess
             gamelogic = requests.get(uri)
             score = gamelogic.json().get("score")
             chosen_word = gamelogic.json().get("chosen_word")
-            msg = 'Your guess was: '+ chosen_word + ' and score: '+ str(score)
+            msg = 'Your guess was: '+ guess + ' and score: '+ str(score)
 
-            return render_template('game.html', len=len(guesses), guesses=guesses, msg=msg)
+            user = {"username":session["username"]}
 
-       
+
+            if sessionscore_collection.find_one(user):
+                sescores = sessionscore_collection.find_one(user) 
+                sessionscore_collection.update_one(user, {'$push': {'scores': score,'guess':guess}})
+                sessionscore_collection.update_one(user, {'$set': {'tries': sescores["tries"]+1}})
+                sescores = sessionscore_collection.find_one(user) 
+                
+            else:
+                sessionscore_collection.insert_one({"username":session["username"],'tries':1,'scores': [score],'guess':[guess]})
+                sescores = sessionscore_collection.find_one(user)   
+                 
+            return render_template('game.html', guesses=sescores['guess'], scores=sescores['scores'], len=len(sescores['guess']))
+
     else:
-        guesses.clear()
         return render_template('login.html', msg="Please Login")
 
-    return render_template('game.html',msg=msg)
+    return render_template('game.html',msg = 'Welcome!')
+
+@app.route('/api/userdata')
+def userdata():
+    user = users_collection.find_one({'username': session["username"]})
+    return jsonify({"usersession":session["tries"],"score": user["score"],"chosen_word":["chosen_word"]}) #jsonify({"guess":guess})
+
 
 @app.route('/logout')
 def logout():
     # remove the username from the session if it's there
     session.clear()
+    print(session)
     return redirect(url_for('login'))
+
+@app.route('/profile')
+def profile():
+    user = users_collection.find_one({'username': session["username"]})
+    return render_template('profile.html',user=user["username"],email=user["email"], joined =user["datecreated"])
+
 
 # main driver function
 if __name__ == '__main__':

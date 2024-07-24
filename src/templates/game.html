@@ -11,7 +11,7 @@
 		<div class="login">
 			<h1>GuessTheVerb</h1>
 			<div>
-				<a href="{{ url_for('register') }}" class="active"><i class="fa fa-user" ></i>Profile</a>
+				<a href="{{ url_for('profile') }}" class="active"><i class="fa fa-user" ></i>Profile</a>
 				<br>
 				<a href="{{ url_for('login') }}" class="active"><i class="fa-solid fa-right-from-bracket" ></i>Logout</a>
 				<br>
@@ -23,20 +23,18 @@
 					<i class="fa-solid fa-globe"></i>
 				</label>
 				<input type="text" name="guess" placeholder="Guess here" id="username" required>
-				<div class="msg">{{ msg }}</div>
-				<!--<div class="msg">
-					<ul>
-						{% if not guesses %}
-							{{ msg }}
-						{% else %} 
-							{%for i in range(0, len)%} 
-							<li>{{guesses[i]}}</li> 
-							{%endfor%} 
-						{% endif %}
-					</ul>
+				<!-- <div class="msg"></div> -->
+				<div class="msg">
+					{% if msg == 'Welcome!' %}
+						{{ msg }}
+					{%else %}
+						{%for i in range(0, len)%} 
+							Your guess was: {{guesses[i]}} and score: {{scores[i]}}  <br>
+						{%endfor%} 
+					{%endif%}
 
 				</div>
-			-->
+			
 
 				<input type="submit" value="Enter">
 			</form>

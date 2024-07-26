@@ -76,28 +76,41 @@ def game():
         print(session["username"])
     
         if request.method == 'POST':
-            guess = request.form['guess']
-
-            uri = 'http://127.0.0.1:8000/'+guess
-            gamelogic = requests.get(uri)
-            score = gamelogic.json().get("score")
-            chosen_word = gamelogic.json().get("chosen_word")
-            msg = 'Your guess was: '+ guess + ' and score: '+ str(score)
 
             user = {"username":session["username"]}
 
-
-            if sessionscore_collection.find_one(user):
-                sescores = sessionscore_collection.find_one(user) 
-                sessionscore_collection.update_one(user, {'$push': {'scores': score,'guess':guess}})
-                sessionscore_collection.update_one(user, {'$set': {'tries': sescores["tries"]+1}})
-                sescores = sessionscore_collection.find_one(user) 
-                
+            if 'giveup' in request.form:
+                sessionscore_collection.delete_one(user)
+                return render_template('game.html',msg = 'Start Over!')
             else:
-                sessionscore_collection.insert_one({"username":session["username"],'tries':1,'scores': [score],'guess':[guess]})
-                sescores = sessionscore_collection.find_one(user)   
-                 
-            return render_template('game.html', guesses=sescores['guess'], scores=sescores['scores'], len=len(sescores['guess']))
+                guess = request.form['guess']
+
+                if not sessionscore_collection.find_one(user):
+                    guess_u = guess+'/first'
+                else:
+                    sescores = sessionscore_collection.find_one(user)
+                    guess_u = guess+'/'+sescores['word']
+
+                print(guess_u)
+                uri = 'http://127.0.0.1:8000/'+guess_u
+                gamelogic = requests.get(uri)
+                score = gamelogic.json().get("score")
+                chosen_word = gamelogic.json().get("chosen_word")
+
+                if score == 1000:
+                    return render_template('game.html',msg = 'You Won! Start Over')
+
+                elif sessionscore_collection.find_one(user):
+                    sescores = sessionscore_collection.find_one(user) 
+                    sessionscore_collection.update_one(user, {'$push': {'scores': score,'guess':guess}})
+                    sessionscore_collection.update_one(user, {'$set': {'tries': sescores["tries"]+1}})
+                    sescores = sessionscore_collection.find_one(user) 
+                    
+                else:
+                    sessionscore_collection.insert_one({"username":session["username"],'tries':1,"word":chosen_word,'scores': [score],'guess':[guess]})
+                    sescores = sessionscore_collection.find_one(user)   
+                    
+                return render_template('game.html', guesses=sescores['guess'], scores=sescores['scores'], len=len(sescores['guess']))
 
     else:
         return render_template('login.html', msg="Please Login")

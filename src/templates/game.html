@@ -25,18 +25,20 @@
 				<input type="text" name="guess" placeholder="Guess here" id="username" required>
 				<!-- <div class="msg"></div> -->
 				<div class="msg">
-					{% if msg == 'Welcome!' %}
+					{% if msg == 'Welcome!' or msg == "Start Over!" or msg == 'You Won! Start Over' %}
 						{{ msg }}
 					{%else %}
 						{%for i in range(0, len)%} 
-							Your guess was: {{guesses[i]}} and score: {{scores[i]}}  <br>
+							Your guess was: {{guesses[i]}} and similarity score: {{scores[i]}}  <br>
 						{%endfor%} 
 					{%endif%}
-
 				</div>
 			
-
 				<input type="submit" value="Enter">
+			</form>
+
+			<form action="{{ url_for('game') }}" method="post">
+				<input type="submit" value="Give Up" name="giveup">
 			</form>
 		</div>
 	</body>

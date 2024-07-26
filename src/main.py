@@ -46,13 +46,16 @@ def calculate_score(guess, word):
 
 ## Bhushan's update:
 
-@app.route('/<guess>', methods=['GET'])
-def gamelogic(guess):
+@app.route('/<guess>/<word>', methods=['GET'])
+def gamelogic(guess,word):
     user_guess = guess.strip().lower()
     chosen_word = choose_word()  # Default to a new word if not set
-    score = calculate_score(user_guess, chosen_word)
+    if word == "first":
+        score = calculate_score(user_guess, chosen_word)
+    else:
+        score = calculate_score(user_guess, word)
     print(guess)
-    print(chosen_word)
+    print(word)
     return  jsonify({"score": score,"chosen_word":chosen_word}) #jsonify({"guess":guess})
 
 if __name__ == '__main__':

@@ -98,6 +98,7 @@ def game():
                 chosen_word = gamelogic.json().get("chosen_word")
 
                 if score == 1000:
+                    sessionscore_collection.delete_one(user)
                     return render_template('game.html',msg = 'You Won! Start Over')
 
                 elif sessionscore_collection.find_one(user):

@@ -11,11 +11,11 @@ load_dotenv()
 MgPass = os.getenv('MongoPass')
 MgUser = os.getenv('MongoUser')
  
-uri = 'mongodb+srv://lilyantoma:Kr7XacrE7cJHYFzQ@cluster0.uad9ms8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+uri = "mongodb+srv://allusers:rNjlBpOnKQReyiF8@cluster0.zbjwcra.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"  # Replace with a strong secret key
-client = MongoClient(uri,27017)
+client = MongoClient(uri)#,27017)
 db = client['GuessTheVerb']  # Replace with your MongoDB database name
 users_collection = db['users']
 sessionscore_collection = db['sescore']

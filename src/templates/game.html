@@ -1,45 +1,50 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>Game</title>
-		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
-		<script src="https://kit.fontawesome.com/9445619a21.js" crossorigin="anonymous"></script>
-	</head>
-	<body>
-		<div class="login">
-			<h1>GuessTheVerb</h1>
-			<div>
-				<a href="{{ url_for('profile') }}" class="active"><i class="fa fa-user" ></i>Profile</a>
-				<br>
-				<a href="{{ url_for('login') }}" class="active"><i class="fa-solid fa-right-from-bracket" ></i>Logout</a>
-				<br>
-			</div>
-			
-			
-			<form action="{{ url_for('game') }}" method="post">
-				<label for="guess">
-					<i class="fa-solid fa-globe"></i>
-				</label>
-				<input type="text" name="guess" placeholder="Guess here" id="username" required>
-				<!-- <div class="msg"></div> -->
-				<div class="msg">
-					{% if msg == 'Welcome!' or msg == "Start Over!" or msg == 'You Won! Start Over' %}
-						{{ msg }}
-					{%else %}
-						{%for i in range(0, len)%} 
-							Your guess was: {{guesses[i]}} and similarity score: {{scores[i]}}  <br>
-						{%endfor%} 
-					{%endif%}
-				</div>
-			
-				<input type="submit" value="Enter">
-			</form>
+<head>
+    <meta charset="utf-8">
+    <title>Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+    <script src="https://kit.fontawesome.com/9445619a21.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="login">
+        <h1>GuessTheVerb</h1>
+        <div>
+            <a href="{{ url_for('profile') }}" class="active"><i class="fa fa-user"></i>Profile</a>
+            <br>
+            <a href="{{ url_for('login') }}" class="active"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
+            <br>
+        </div>
+        
+        <form action="{{ url_for('game') }}" method="post">
+            <label for="language">
+                <i class="fa-solid fa-language"></i>
+            </label>
+            <select name="language" id="language">
+                <option value="english">English</option>
+                <option value="spanish">Spanish</option>
+            </select>
+            <br>
+            <label for="guess">
+                <i class="fa-solid fa-globe"></i>
+            </label>
+            <input type="text" name="guess" placeholder="Guess here" id="guess" required>
+            <div class="msg">
+                {% if msg == 'Welcome!' or msg == "Start Over!" or msg == 'You Won! Start Over' %}
+                    {{ msg }}
+                {% else %}
+                    {% for i in range(0, len) %} 
+                        Your guess was: {{ guesses[i] }} and similarity score: {{ scores[i] }}  <br>
+                    {% endfor %} 
+                {% endif %}
+            </div>
+            <input type="submit" value="Enter">
+        </form>
 
-			<form action="{{ url_for('game') }}" method="post">
-				<input type="submit" value="Give Up" name="giveup">
-			</form>
-		</div>
-	</body>
+        <form action="{{ url_for('game') }}" method="post">
+            <input type="submit" value="Give Up" name="giveup">
+        </form>
+    </div>
+</body>
 </html>

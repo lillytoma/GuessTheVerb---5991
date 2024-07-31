@@ -6,7 +6,6 @@ import requests
 import datetime as dt
 import bson
 
-
 load_dotenv()
 MgPass = os.getenv('MongoPass')
 MgUser = os.getenv('MongoUser')
@@ -81,42 +80,42 @@ def game():
 
             if 'giveup' in request.form:
                 sessionscore_collection.delete_one(user)
-                return render_template('game.html',msg = 'Start Over!')
+                session.pop('chosen_word', None)  # Clear chosen word from session
+                return render_template('game.html', msg='Start Over!')
             else:
                 guess = request.form['guess']
+                language = request.form.get('language', 'english')  # Default to English if not specified
 
-                if not sessionscore_collection.find_one(user):
-                    guess_u = guess+'/first'
+                if 'chosen_word' not in session:
+                    chosen_word = requests.get(f'http://127.0.0.1:8000/choose_word/{language}').json().get('chosen_word')
+                    session['chosen_word'] = chosen_word
                 else:
-                    sescores = sessionscore_collection.find_one(user)
-                    guess_u = guess+'/'+sescores['word']
+                    chosen_word = session['chosen_word']
 
-                print(guess_u)
-                uri = 'http://127.0.0.1:8000/'+guess_u
+                uri = f'http://127.0.0.1:8000/{guess}/{chosen_word}/{language}'
                 gamelogic = requests.get(uri)
                 score = gamelogic.json().get("score")
-                chosen_word = gamelogic.json().get("chosen_word")
 
                 if score == 1000:
                     sessionscore_collection.delete_one(user)
-                    return render_template('game.html',msg = 'You Won! Start Over')
+                    session.pop('chosen_word', None)  # Clear chosen word from session
+                    return render_template('game.html', msg='You Won! Start Over')
 
                 elif sessionscore_collection.find_one(user):
-                    sescores = sessionscore_collection.find_one(user) 
-                    sessionscore_collection.update_one(user, {'$push': {'scores': score,'guess':guess}})
-                    sessionscore_collection.update_one(user, {'$set': {'tries': sescores["tries"]+1}})
-                    sescores = sessionscore_collection.find_one(user) 
-                    
+                    sescores = sessionscore_collection.find_one(user)
+                    sessionscore_collection.update_one(user, {'$push': {'scores': score, 'guess': guess}})
+                    sessionscore_collection.update_one(user, {'$set': {'tries': sescores["tries"] + 1}})
+                    sescores = sessionscore_collection.find_one(user)
                 else:
-                    sessionscore_collection.insert_one({"username":session["username"],'tries':1,"word":chosen_word,'scores': [score],'guess':[guess]})
-                    sescores = sessionscore_collection.find_one(user)   
-                    
+                    sessionscore_collection.insert_one({"username": session["username"], 'tries': 1, "word": chosen_word, 'scores': [score], 'guess': [guess]})
+                    sescores = sessionscore_collection.find_one(user)
+
                 return render_template('game.html', guesses=sescores['guess'], scores=sescores['scores'], len=len(sescores['guess']))
 
     else:
         return render_template('login.html', msg="Please Login")
 
-    return render_template('game.html',msg = 'Welcome!')
+    return render_template('game.html', msg='Welcome!')
 
 @app.route('/api/userdata')
 def userdata():
@@ -139,9 +138,4 @@ def profile():
 
 # main driver function
 if __name__ == '__main__':
-
-    # run() method of Flask class runs the application 
-    # on the local development server.
-    app.run(debug = True, port = 5001)
-
-    #https://www.geeksforgeeks.org/build-your-own-microservices-in-flask/
+    app.run(debug=True, port=5001)

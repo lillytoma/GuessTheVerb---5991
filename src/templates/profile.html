@@ -1,49 +1,49 @@
 <!DOCTYPE html>
 <html>
-	<head>
-
-		<meta charset="utf-8">
-		<title>Profile</title>
-		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
-		<script src="https://kit.fontawesome.com/9445619a21.js" crossorigin="anonymous"></script>
-	</head>
-	<body>
-		<div class="login">
-			<h1>Profile</h1>
-			<div class="links">
-				<a href="{{ url_for('game') }}" class="active"><i class="fa fa-gamepad"></i> Game</a>
-				<a href="{{ url_for('logout') }}" class="active"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-			</div>
-			<div class="profile-info">
-				<div class="profile-pic">
-					<img src="{{ url_for('static', filename='images/default-profile.png') }}" alt="Profile Picture">
-				</div>
-				<div class="details">
-					<p><strong>Username:</strong> {{ user }}</p>
-					<p><strong>Email:</strong> {{ email }}</p>
-					<p><strong>Joined:</strong> {{ joined }}</p>
-				</div>
-			</div>
-			<div class="edit-profile">
-				<h2>Edit Profile</h2>
-				<form action="{{ url_for('login') }}" method="post" enctype="multipart/form-data">
-					<label for="username">
-						<i class="fas fa-user"></i>
-					</label>
-					<input type="text" name="username" placeholder="New Username" id="username">
-					<label for="email">
-						<i class="fas fa-envelope"></i>
-					</label>
-					<input type="email" name="email" placeholder="New Email" id="email">
-					<label for="profile-pic">
-						<i class="fas fa-camera"></i>
-					</label>
-					<input type="file" name="profile-pic" id="profile-pic">
-					<input type="submit" value="Update Profile">
-				</form>
-			</div>
-		</div>
-
-	</body>
+<head>
+    <meta charset="utf-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+    <script src="https://kit.fontawesome.com/9445619a21.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="login">
+        <h1>Profile</h1>
+        <div class="links">
+            <a href="{{ url_for('game') }}" class="active"><i class="fa fa-gamepad"></i> Game</a>
+            <a href="{{ url_for('logout') }}" class="active"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+        <div class="profile-info">
+            <div class="profile-pic">
+                <img src="{{ url_for('static', filename='images/default-profile.png') }}" alt="Profile Picture">
+            </div>
+            <div class="details">
+                <p><strong>Username:</strong> {{ user }}</p>
+                <p><strong>Email:</strong> {{ email }}</p>
+                <p><strong>Joined:</strong> {{ joined }}</p>
+                <p><strong>Score:</strong> {{ score }}</p>
+                <p><strong>Ranking:</strong> {{ ranking }}</p>
+            </div>
+        </div>
+        <div class="edit-profile">
+            <h2>Edit Profile</h2>
+            <form action="{{ url_for('login') }}" method="post" enctype="multipart/form-data">
+                <label for="username">
+                    <i class="fas fa-user"></i>
+                </label>
+                <input type="text" name="username" placeholder="New Username" id="username">
+                <label for="email">
+                    <i class="fas fa-envelope"></i>
+                </label>
+                <input type="email" name="email" placeholder="New Email" id="email">
+                <label for="profile-pic">
+                    <i class="fas fa-camera"></i>
+                </label>
+                <input type="file" name="profile-pic" id="profile-pic">
+                <input type="submit" value="Update Profile">
+            </form>
+        </div>
+    </div>
+</body>
 </html>
